@@ -32,7 +32,6 @@ def format_work_time(td): #秒数から勤務時間表示
 
 
 #ログイン機能設定--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-app.config["SECRET_KEY"] = os.urandom(24)
 login_manager = LoginManager()
 login_manager.init_app(app)
 @login_manager.user_loader
@@ -42,15 +41,22 @@ def load_user(user_id):
 
 #データベースの情報--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 db = SQLAlchemy()
-db_info = {
-    "user": "postgres",
-    "password": "yoneken812",
-    "host": "localhost",
-    "name": "attendance"
+
+if app.debug:
+    app.config["SECRET_KEY"] = os.urandom(24)
+    db_info = {
+        "user": "postgres",
+        "password": "yoneken812",
+        "host": "localhost",
+        "name": "attendance"
     }
-SQLALCHEMY_DATABASE_URI = "postgresql+psycopg://{user}:{password}@{host}/{name}".format(**db_info) 
+    SQLALCHEMY_DATABASE_URI = "postgresql+psycopg://{user}:{password}@{host}/{name}".format(**db_info) 
+else:
+    app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL").replace("postgres://", "postgresql+psycopg://")
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI 
-db.init_app(app)
+db.init_app(app) 
+
 migrate = Migrate(app, db)
 
 
