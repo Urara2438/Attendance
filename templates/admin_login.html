@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>勤怠管理</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+</head>
+<body>
+    <h1>勤怠管理アプリ</h1>
+    <hr>
+    <div class="login-card-large">
+    <h2>管理者ログイン🛠️</h2>
+    <form class="login-card" method="POST">
+        <div class="form-row">
+            <label for="email_address">メールアドレス</label>
+            <input type="email" id="email_address" name="email_address">
+        </div>
+        <div class="form-row">
+            <label for="password">パスワード</label>
+            <input type="text" id="password" name="password">
+        </div>
+        {% if message %}
+        <p style="color:red">{{ message }}</p>
+        {% endif %}                         
+        <input type="submit" value="ログイン">
+    </form> 
+    <br>
+    <a class="hover" href="/">戻る</a>
+    </div>
+</body>
+</html>

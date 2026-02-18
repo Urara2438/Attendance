@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>勤怠管理</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='mypage.css') }}">
+</head>
+
+<body>
+    <h1>勤怠管理アプリ</h1>
+    <hr>
+    <div class="login-card-large">
+    <h2>{{ user.username }}さんのマイページ</h2>
+
+    <p style="text-align: center; font-size: 2rem;">現在時刻: {{ now.strftime("%Y-%m-%d %H:%M:%S") }}</p>
+
+    <!--出勤退勤ボタン-->
+    <div class="button-group">
+    <form action="/work_in" method="POST" style="display:inline;">
+    <button type="submit" id="work_in"{% if on_work %}disabled{% endif %}>出勤</button>
+    </form>
+    <form action="/work_out" method="POST" style="display:inline;">
+    <button type="submit" id="work_out"{% if not on_work %}disabled{% endif %}>退勤</button>
+    </form>
+    </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <p>{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <br>
+
+    <!--最近の勤務記録-->
+    <h3>最近の勤務記録</h3>
+    <table border="2" class="cute-table">
+    <tr>
+        <th>日付</th>
+        <th>出勤時刻</th>
+        <th>退勤時刻</th>
+        <th>勤務時間</th>
+    </tr>
+    {% for record in all_records %}
+    <tr>
+        <td>{{ record.work_in.strftime("%Y-%m-%d") }}</td>
+        <td>{{ record.work_in.strftime("%H:%M:%S") }}</td>
+        <td>{{ record.work_out.strftime("%H:%M:%S") if record.work_out else "—" }}</td>
+        <td>{{ record.formatted_work_time }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    <br>
+    <a href="{{ url_for('edit') }}">登録情報の確認及び編集</a>
+    <br>
+    <a href="{{ url_for('logout') }}" onclick="return confirm('ログアウトしますか？');">ログアウト</a>
+    </div>
+</body>
+</html>
